@@ -24,6 +24,8 @@ public class PublisherController {
     public String getDauTotal(@RequestParam("date") String date){
         //查询日活总数
         Integer dauTotal = publisherService.getDauTotal(date);
+        //
+        Double orderAmountTotal = publisherService.getOrderAmountTotal(date);
         //创建一个list存储结果数据
         ArrayList<Map> result = new ArrayList<>();
         //创建Map来存储KV传入list
@@ -37,9 +39,15 @@ public class PublisherController {
         newMidMap.put("id","dau");
         newMidMap.put("name","新增设备");
         newMidMap.put("value",233);
+        //创建另一个Map给新增设备赋值
+        HashMap<String, Object> orderMap = new HashMap<>();
+        orderMap.put("id","order_amount");
+        orderMap.put("name","新增交易额");
+        orderMap.put("value",orderAmountTotal);
         //注意顺序
         result.add(dauMap);
         result.add(newMidMap);
+        result.add(orderMap);
 
         //返回结果
         return JSONObject.toJSONString(result);
@@ -50,13 +58,21 @@ public class PublisherController {
                                      @RequestParam("date") String date) {
         HashMap<String, Map> hashMap = new HashMap<>();
 
+        String yesterday = LocalDate.parse(date).plusDays(-1).toString();
+
         if ("dau".equals(id)) {
             Map map = publisherService.getHourTotal(date);
-            String yesterday = LocalDate.parse(date).plusDays(-1).toString();
+
             Map yesterdayMap = publisherService.getHourTotal(yesterday);
 
             hashMap.put("yesterday", yesterdayMap);
             hashMap.put("today", map);
+        }else if("order_amount".equals(id)){
+            Map map = publisherService.getOrderAmountHourMap(date);
+            Map yesterdayMap = publisherService.getOrderAmountHourMap(yesterday);
+            hashMap.put("yesterday", yesterdayMap);
+            hashMap.put("today", map);
+
         }
 
         return JSONObject.toJSONString(hashMap);

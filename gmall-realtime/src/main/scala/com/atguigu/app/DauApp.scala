@@ -3,16 +3,15 @@ package com.atguigu.app
 import java.text.SimpleDateFormat
 import java.util.Date
 
-
 import com.alibaba.fastjson.JSON
 import com.atguigu.bean.StartUpLog
 import com.atguigu.constants.GmallConstants
 import com.atguigu.handler.DauHandler
 import com.atguigu.utils.MyKafkaUtil
 import org.apache.hadoop.hbase.HBaseConfiguration
+import org.apache.phoenix.spark._
 import org.apache.spark.SparkConf
 import org.apache.spark.streaming.{Seconds, StreamingContext}
-import org.apache.phoenix.spark._
 
 /**
  * @author zqw
@@ -56,11 +55,13 @@ object DauApp {
     //同批次去重
     val filterByGroupDStream = DauHandler.filterByGroup(filterByRedisDSteam)
 
+
     filterByGroupDStream.cache()
     filterByGroupDStream.count().print()
 
     //写入redis
-    DauHandler.saveMidToRedis(startLogStream)
+    DauHandler.saveMidToRedis(filterByGroupDStream)
+
 
     //写入Hbase
     filterByGroupDStream.foreachRDD(
@@ -69,13 +70,16 @@ object DauApp {
           "GMALL200317_DAU",
           classOf[StartUpLog].getDeclaredFields.map(_.getName.toUpperCase()),
           HBaseConfiguration.create(),
-          Some("hadoop102,hadoop103,hadoop104:2181"))
+          Some("hadoop102,hadoop103,hadoop104:2181")
+        )
       }
     )
 
     //启动任务
+
     ssc.start()
     ssc.awaitTermination()
+
 
   }
 

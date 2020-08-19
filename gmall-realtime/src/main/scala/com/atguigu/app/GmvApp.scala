@@ -47,8 +47,6 @@ object GmvApp {
         Some("hadoop102,hadoop103,hadoop104:2181"))
     })
 
-
-
     scc.start()
     scc.awaitTermination()
 

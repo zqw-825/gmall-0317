@@ -25,7 +25,8 @@ object DauApp {
     val ssc = new StreamingContext(conf, Seconds(5))
 
     //读取kafka START主题数据  创建流
-    val kafkaDStream = MyKafkaUtil.getKafkaStream(GmallConstants.GMALL_TOPIC_START, ssc)
+    val kafkaDStream =
+      MyKafkaUtil.getKafkaStream(GmallConstants.GMALL_TOPIC_START, ssc)
     //读取的数据为json格式
     val sdf = new SimpleDateFormat("yyyy-MM-dd HH")
     //转换为样例类对象

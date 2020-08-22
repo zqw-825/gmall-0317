@@ -84,6 +84,12 @@ public class CanalClient {
                     for (CanalEntry.Column column : rowData.getAfterColumnsList()) {
                         jsonObject.put(column.getName(),column.getValue());
                     }
+
+                    try {
+                        Thread.sleep(5*1000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
                     System.out.println("kafka!!");
 
                     MyKafkaSender.send(GmallConstants.GMALL_TOPIC_ORDER_INFO,jsonObject.toString());

@@ -15,7 +15,8 @@ public class GmallConstants {
     //订单日志主题
     public static final String GMALL_TOPIC_ORDER_INFO= "TOPIC_ORDER_INFO";
 
-    public static final String GMALL_COUPON_ALERT_PRE= "gmall_coupon_alert";
+    public static final String GMALL_TOPIC_ORDER_DETAIL= "TOPIC_ORDER_DETAIL";
 
+    public static final String GMALL_COUPON_ALERT_PRE= "gmall_coupon_alert";
 }
 
